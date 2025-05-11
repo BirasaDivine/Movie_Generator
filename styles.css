@@ -20,3 +20,16 @@ form input {
     font-size: 20px;
     padding: 10px 15px;
   }
+.container{
+  margin: 50px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.container .title,
+.container .description
+.container .date,
+.container .poster{
+    margin: 10px 0;
+}

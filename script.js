@@ -1,4 +1,4 @@
- const input=document.getElementById("movie")
+const input=document.getElementById("movie")
 const results=document.querySelector("p")
 const generate=document.querySelector("button")
 
@@ -10,37 +10,48 @@ const options = {
     }
   };
 
-function generateMovie(endpoint){
-   return fetch( endpoint, options)
+function generateMovie(url){
+    return fetch(url, options)
     .then(function(response){
         if(!response.ok){
-            throw new Error(`HTTP Request ${response}`)
+            throw new Error(`HTTP Request ${response.status}`)
         }else{
             return response.json()
         }
     })
-    .catch(function(error){
-        console.log(error)
-    })
+    .catch(err => console.error(err));
 }
 generate.addEventListener("click",function(event){
     event.preventDefault()
     const query=input.value
-    generateMovie(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`).then(function(result){
-        result.results.map(movie => {
-          const container=document.createElement("div")
-          const header=document.createElement("h1")
-          const description=document.createElement("p")
-          const image=document.createElement("img")
-          image.src = "https://media.themoviedb.org/t/p/w94_and_h141_bestv2/" + movie.poster_path
-          header.textContent=movie.title
-          description.textContent=movie.overview
-          container.appendChild(header)
-          container.appendChild(description)
-          container.appendChild(image)
-          container.classList.add("container")
-          results.appendChild(container)
-        })
+    generateMovie(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`)
+    .then(function(response){
+        //console.log(response)
+       response.results.map(movie => {
+        const container=document.createElement("div")
+        const title=document.createElement("h1")
+        const description=document.createElement("div")
+        const date=document.createElement("p")
+        const image=document.createElement("img")
+        title.textContent=movie.title
+        image.src = movie.poster_path
+        ? "https://image.tmdb.org/t/p/w200" + movie.poster_path
+        : "https://via.placeholder.com/200x300?text=No+Image";
 
+        description.textContent=movie.overview
+        date.textContent=` Release Date : ${movie.release_date}`
+        container.classList.add("container");
+        title.classList.add("title");
+        description.classList.add("description");
+        date.classList.add("date");
+        image.classList.add("poster");
+        container.appendChild(title)
+        container.appendChild(image)
+        container.appendChild(description)
+        container.appendChild(date)
+        results.appendChild(container)
+
+
+       })
     })
 })
